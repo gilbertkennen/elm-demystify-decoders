@@ -1,27 +1,44 @@
-module Exercise02 exposing (decoder)
+module Exercise02 exposing (isEvenDecoder)
 
-import Json.Decode exposing (Decoder, fail)
+import Json.Decode exposing (Decoder, fail, succeed)
 
 
-{- As a second step, let's decode something a tiny bit more complex, that will
-   show you how to compose decoders.
+{- Now that we are able to create a decoder which always succeeds we can start
+   playing with it.
 
-   Here are two hints: figure out how to decode the _inner_ type, then figure
-   out how to use that to decode what it's enclosed in.
+   The tests will provide the success decoder for you. What you need to do is
+   modify the success value that decoder produces. In this case, we don't care
+   what actual integer it produces, we only care about knowing if it is even or
+   odd.
 
-   Expected input will look like this in JS:
+   We already know how we would do this if we didn't have to bother with these
+   decoder things and the function is provided. Your job is to use that function
+   and lift it into the world of `Decoder`.
 
-       var listToDecode = [ "foo", "bar", "baz" ];
+       isEvenDecoder (succeed 4)
 
-   Expected output will look like this in Elm, on succesfully decoding:
+   should produce something equivalent to (~=)
 
-       [ "foo", "bar", "baz" ]
+       succeed True
+
+   while
+
+       isEvenDecoder (succeed 3) ~= succeed False
+
+   If a failing decoder is passed in, nothing will change.
+
+       isEvenDecoder (fail "foo") ~= fail "foo"
 -}
 
 
-decoder : Decoder (List String)
-decoder =
-    fail "I still need to be implemented!"
+isEvenDecoder : Decoder Int -> Decoder Bool
+isEvenDecoder intDecoder =
+    fail "Ouch!"
+
+
+isEven : Int -> Bool
+isEven x =
+    x % 2 == 0
 
 
 

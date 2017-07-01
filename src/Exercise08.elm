@@ -1,35 +1,80 @@
-module Exercise08 exposing (decoder, Color(..))
+module Exercise08 exposing (Report(TosViolation, Custom), reportsDecoder)
 
-import Json.Decode exposing (Decoder, fail, succeed)
+import Json.Decode exposing (Decoder, andThen, fail, list, succeed)
 
 
-{- You've already seen that a decoder can completely ignore whatever is going on
-   in the javascript value. This opens possibilities, for example we can make a
-   decoder that simple takes a `String` and decodes this into a union type, or
-   fails with a nice error message if the input is not valid.
+{- Next up:
 
-   Note that this function will look quite similar to a function that would
-   decode into a`Result String Color` - the major difference being that
-   `Decoder` isn't a union type, but holds internal state and you need
-   functions to build a decoder, rather than calling constructors.
+       "reports" : [ { "reason": "tos-violation" },
+                     { "reason": "custom", "text" : "Think of the children!" }
+                   ],
 
-   When calling `decoder` with `"green"`, it is expected to return a decoder
-   that always succeeds with `Green`. The same applies for `"blue"` and `"red"`.
+   We already know how to decode lists, but the objects in this list are a bit
+   different. For simplicity of the example, there are only two report types and
+   one type has a different shape.
 
-   When calling `decoder` with a different string, like `"foo"`, it is expected
-   to return a decoder that always fails with `"I don't know a color named foo"`
+   For this, you need to choose a decoder based on the value in a particular
+   field. Luckily we already learned how to choose different decoders based on
+   an input (back before we were working with an actual JavaScript value).
+
+   The new trick here is how to get the string at "reason" in the first place.
+   Let's think about what we need to know to perform such an action. We need to
+   know the name of the field, a `String`, and we need to decode the value in
+   that field, so a `Decoder String` and if things are successful, we expect
+   that the new decoder will produces a `String`, so the result should have type
+   `Decoder String`. Once you have that, you can use that string to choose the
+   decoder for the shape of data that you have.
+
+   That is a lot, but you will find the problem broken up into smaller steps
+   below (often a good idea).
+
+   `reportsDecoder` is fine as it is, you shouldn't need to change it.
+
+   `reportDecoder` needs to get the "reason" string and figure out how to pass
+   it to `reportDecoderFromString`
+
+   `reportDecoderFromString` needs to choose which of he two remaining decoders
+   to use based on the input string. It should fail if the "report" string is
+   unrecognized.
+
+   `tosViolationDecoder` is already defined for you since you have enough to do
+   already.
+
+   `customReportDecoder` needs to get the `String` value in the "text" field and
+   wrap it in `Custom`.
+
+   Once you get through that, give yourself a pat on the back, you earned it.
 -}
 
 
-type Color
-    = Green
-    | Blue
-    | Red
+type Report
+    = TosViolation
+    | Custom String
 
 
-decoder : String -> Decoder Color
-decoder colorString =
-    fail <| "I don't know a color named " ++ colorString
+reportsDecoder : Decoder (List Report)
+reportsDecoder =
+    list reportDecoder
+
+
+reportDecoder : Decoder Report
+reportDecoder =
+    fail "Who cares about reports?"
+
+
+reportDecoderFromString : String -> Decoder Report
+reportDecoderFromString reportString =
+    fail "If I just knew what the reason field was, I could choose the right decoder."
+
+
+tosViolationDecoder : Decoder Report
+tosViolationDecoder =
+    succeed TosViolation
+
+
+customReportDecoder : Decoder Report
+customReportDecoder =
+    fail "How do we make a Custom report?"
 
 
 

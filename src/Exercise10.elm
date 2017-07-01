@@ -1,53 +1,47 @@
-module Exercise10 exposing (decoder, Person, PersonDetails, Role(..))
+module Exercise10 exposing (Reference, referencesDecoder)
 
-import Json.Decode exposing (fail, Decoder)
-
-
-{- Let's try and do a complicated decoder, this time. No worries, nothing new
-   here: applying the techniques you've used in the previous decoders should
-   help you through this one.
-
-   A couple of pointers:
-    - try working "inside out". Write decoders for the details and role first
-    - combine those decoders + the username and map them into the Person constructor
-    - finally, wrap it all together to build it into a list of people
+import Exercise05 exposing (Id(Id))
+import Json.Decode exposing (Decoder, fail)
 
 
-   Example input:
+{- There sure are a lot of different structures in this API:
 
-        [ { "username": "Phoebe"
-          , "role": "regular"
-          , "details":
-            { "registered": "yesterday"
-            , "aliases": [ "Phoebs" ]
-            }
-          }
-        ]
+       "references" : [ { "post-id" : 1 },
+                        { "post-id" : 4, "count" : 3 }
+                      ],
+
+   Whomever made this bit decided to just omit the "count" field when there was
+   only one reference to a post. Luckily, we don't have to duplicate this in our
+   application by filling in the `1` when needed.
+
+   A function for constructing the `Reference` has been provided.
+
+   As usual, we need another tool to make something of this. Once again, we want
+   to apply a decoder if we have a value, but we want `Nothing` if the field is
+   missing. Remember the warning not to use the wrong function from the previous
+   exercise?
 -}
 
 
-type alias Person =
-    { username : String
-    , role : Role
-    , details : PersonDetails
+type alias Reference =
+    { postId : Id
+    , count : Int
     }
 
 
-type alias PersonDetails =
-    { registered : String
-    , aliases : List String
-    }
-
-
-type Role
-    = Newbie
-    | Regular
-    | OldFart
-
-
-decoder : Decoder (List Person)
-decoder =
+referencesDecoder : Decoder (List Reference)
+referencesDecoder =
     fail "This seems like a lot of work."
+
+
+referenceDecoder : Decoder Reference
+referenceDecoder =
+    fail "This seems like very slightly less work."
+
+
+mkReference : Maybe Int -> Int -> Reference
+mkReference count postId =
+    Reference (Id postId) (count |> Maybe.withDefault 1)
 
 
 

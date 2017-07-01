@@ -1,23 +1,29 @@
-module Exercise07 exposing (decoder)
+module Exercise07 exposing (tagsDecoder)
 
 import Json.Decode exposing (Decoder, fail)
 
 
-{- This one is special.
+{- In this exercise, we look at this bit of JSON:
 
-   In the previous exercises, we've always used information from the javascript
-   value to get to our result. Now, we won't!
+       "tags" : { "great" : 5,
+                  "elm" : 25,
+                  "belgium" : 12,
+                  "profanity" : 12
+                },
 
-   The exercise here, is to write a decoder that will always succeed with the
-   string "sure."
+   Once again focusing just on the value (we will get around to applying these
+   at the end) we have an object with fields and integers. We know that these
+   fields are going to vary, so what has been decided is we want to get a
+   `List (String, Int)` out of it.
 
-   You've already seen what a decoder that always fails looks like, so it
-   shouldn't be too hard; but it is _very_ important.
+   JSON field names are always strings, a function that does such a thing will have that built-in. Such a function wouldn't necessarily know what the values are, so it probably needs a decoder (in this case `int`) to work.
+
+   You are tasked with finding such a function.
 -}
 
 
-decoder : Decoder String
-decoder =
+tagsDecoder : Decoder (List ( String, Int ))
+tagsDecoder =
     fail "I'd rather succeed, really."
 
 

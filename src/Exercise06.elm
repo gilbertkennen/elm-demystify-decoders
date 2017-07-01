@@ -1,53 +1,24 @@
-module Exercise06 exposing (decoder, Person)
+module Exercise06 exposing (categoriesDecoder)
 
 import Json.Decode exposing (fail, Decoder)
 
 
-{- Now, onto the "real" stuff: decoding a JS object into an Elm record.
+{- The next bit of JSON we will work on is:
 
-   The record we'll be working with, had been given a type alias. This means that we can refer to the specific _shape_ of a record (which includes the names and types of the fields) by a name.
+       "categories" : [ "posts", "educational" ],
 
-   However, a type alias for records (and _only_ for records) does just one
-   more thing: it creates a magical constructor function. In the case of
-   `Person`, this magical constructor function is conveniently named `Person`
-   and has the following signature: `String -> Int -> Person`.
+   Once again, we won't worry about how we get here, we just want to decode the
+   value at this location, in this case a list of strings.
 
-   The types in the signature match the fields of the record; in the exact
-   order as they were defined.
-
-   You can verify the existence of this constructor function yourself by
-   running a REPL (read, eval, print loop) using `elm repl` from the root
-   directory of this project, importing this file using `import Exercise06
-   exposing (Person)` and getting information about the `Person` function by
-   simply typing `Person`:
-
-        > import Exercise06 exposing (Person)
-        > Person
-        <function> : String -> Int -> Exercise06.Person
-
-   Use the knowledge you've gained so far, and leverage this function to
-   construct the required record, feeding the `Person` function the values you
-   decode in the order that `Person` expects them.
-
-   Input looks like this, in JS:
-
-        var input = { "name": "Josh", "age": 50 }
-
-   The expected output for the above would be one of the following, which are
-   completely equivalent:
-
-        Person "Josh" 50
-        == { name = "Josh", age = 50 }
-
+   Since strings are primitive constructs, there is a primitive decoder for
+   them of type `Decoder String`. But we need a `Decoder (List String)`. Your
+   job is to find both the primitive string decoder and a function which will
+   apply that decoder to each value in the list.
 -}
 
 
-type alias Person =
-    { name : String, age : Int }
-
-
-decoder : Decoder Person
-decoder =
+categoriesDecoder : Decoder (List String)
+categoriesDecoder =
     fail "Implement me!"
 
 

@@ -1,0 +1,27 @@
+{
+  "id" : 5,
+  "categories" : [ "outrageous", "educational" ],
+  "tags" : { "great" : 5,
+             "elm" : 25,
+             "belgium" : 12,
+             "profanity" : 12
+           },
+  "reports" : [ { "reason": "tos-violation" },
+                { "reason": "custom", "text" : "Think of the children!" }
+              ],
+  "authors" : [ { "user-id" : 5, "pen-name" : "Leo" },
+                { "user-id" : 7, "pen-name" : null }
+              ],
+  "references" : [ { "post-id" : 1 },
+                   { "post-id" : 2, "count" : 3 }
+                 ],
+  "scores" : [ 12, 5 ],
+  "ratings" : [ 7, 3, "Great.", 5, "What were you thinking?" ],
+  "replies" : [ { "body" : "I learned a lot!",
+                  "replies" : [ { "body" : "So did I!",
+                                  "replies" : []
+                                }
+                              ]
+                }
+              ]
+}

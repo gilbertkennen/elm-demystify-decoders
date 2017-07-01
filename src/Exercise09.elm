@@ -1,47 +1,55 @@
-module Exercise09 exposing (decoder, Fruit(..))
+module Exercise09 exposing (Author(Pseudonym, Default), authorsDecoder)
 
+import Exercise05 exposing (Id(Id))
 import Json.Decode exposing (Decoder, fail)
 
 
-{- Decoding a union type is something that comes up regularly. And now, young
-   padawan, it is time for you to write a complete union-type decoder, too!
+{- Moving on:
 
-   Decoding a union type is essentially a two-step process - first you decode
-   the value into a string, and _then_ you feed that string into a decoder
-   which can return a decoder that succeeds with the correct value, or fails if
-   it cannot be decoded succesfully.
+       "authors" : [ { "user-id" : 5, "pen-name" : "Leo" },
+                     { "user-id" : 7, "pen-name" : null }
+                   ],
 
-   This second step of this process, you may recognize from the previous
-   exercise. For the first step, you'll need to find a function that lets you
-   chain decoders by using the result from the previous decoder to build a new
-   decoder.
+   Another list of objects, but this time they are more regular.
 
-   Input:
+   If a pen name isn't used for a particular author, we are supposed to use the
+   user's default name (via an API query, yes this is a horrible API and we
+   can't change it). The data we want out is either the `String` of the
+   pseudonym or the user-id of the user as an `Id` (remember Exercise05?).
 
-        var input = "apple"
+   A type and a function to construct that type from the decoded values is
+   provided.
 
-   Output:
-
-        Apple
-
-   In case the input cannot be succesfully decoded, an error is expected.
+   You will need just one new tool, some way of possibly decoding a value, but
+   handling the possibility of null. The normal way to handle this is with a
+   `Maybe`. You are looking for a function which will apply a decoder if the
+   value is non-null and return `Nothing` if it is.
 -}
 
 
-type Fruit
-    = Apple
-    | Orange
-    | Banana
+type Author
+    = Pseudonym String
+    | Default Id
 
 
-decoder : Decoder Fruit
-decoder =
-    fail "Nevermind me."
+authorsDecoder : Decoder (List Author)
+authorsDecoder =
+    fail "Decode ALL the things!"
 
 
-fruitDecoder : String -> Decoder Fruit
-fruitDecoder fruitAsString =
-    fail "Unknown fruit."
+authorDecoder : Decoder Author
+authorDecoder =
+    fail "Decode just one."
+
+
+mkAuthor : Maybe String -> Int -> Author
+mkAuthor pseudonym id =
+    case pseudonym of
+        Nothing ->
+            Default (Id id)
+
+        Just pName ->
+            Pseudonym pName
 
 
 

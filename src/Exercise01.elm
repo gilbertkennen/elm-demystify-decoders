@@ -1,4 +1,4 @@
-module Exercise01 exposing (decoder)
+module Exercise01 exposing (successDecoder)
 
 import Json.Decode exposing (Decoder, fail)
 
@@ -8,23 +8,35 @@ import Json.Decode exposing (Decoder, fail)
    gradually creating more and more complex JSON decoders.
 
    So what _is_ a JSON decoder in Elm, really? Essentially, it is a way to go
-   from a raw JavaScript value to an Elm type. So, think of a `Decoder x` as a
-   function `JavaScriptValue -> Result String x`.
+   from a raw JavaScript value to an Elm type. This process *can* fail and if it
+   does, a `String` message will be produced to hopefully help you out a bit. If
+   the decoding doesn't fail, then we produce a value of the type indicated.
 
-   Because you can't actually reach into a JavaScript value directly in Elm, a
-   set of primitive decoders is already handed to you in the `Json.Decode`
-   module.
+   `Decoder Int` produces some `Int` value on success.
 
-   So, have a little look at [the documentation][1] - just a quick check of what
-   the *primitives* section looks like and their types, and try to adjust the
-   following decoder so it can decode a JSON value that looks like `5`.
+   To get comfortable with Decoders, we are going to start by playing with some
+   that do not care what the underlying JavaScript value is at all.
+
+   Below, you will find a decoder which *always* fails with a message. We want
+   a decoder which always succeeds with a static value.
+
+   JavaScript input:
+
+       var listToDecode = [ "foo", "bar", "baz" ];
+
+   Elm output:
+
+       42
+
+   Poke around in the [documentation][1] a bit to see if you can find the right
+   function. It might help to check out `fail` since it is related.
 
    [1]: http://package.elm-lang.org/packages/elm-lang/core/latest/Json-Decode
 -}
 
 
-decoder : Decoder Int
-decoder =
+successDecoder : Decoder Int
+successDecoder =
     fail "I always fail!"
 
 

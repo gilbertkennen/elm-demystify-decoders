@@ -1,35 +1,29 @@
-module Exercise11 exposing (decoder)
+module Exercise11 exposing (Votes, votesDecoder)
 
 import Json.Decode exposing (Decoder, fail)
 
 
-{- Every once in a while, you'll have to deal with oddly structured data. Let's
-   look at one very important tool when dealing with polymorphic data. In this
-   exercise, you will decode a javascript value that will have a key `number`
-   that may either be a single value, or a list of values.
+{- Getting close:
 
-   The task is to always return a list of values. That is to say, if the input
-   is a single number, the output should be "normalized" into a list with a
-   single item in it.
+       "scores" : [ 12, 57 ],
 
-   example input:
+   We have an array, but there are always two integer values in this array, upvotes, and downvotes, in that order.
 
-        var input1 = { "number": 5 }
-        var input2 = { "number": [ 1, 2, 3 ] }
+   We *could* decode the whole list and then do some fancy pattern matching and such to get those out of there, but there has to be (and there is) a better way.
 
-   expected output:
-
-        output1 = [ 5 ]
-        output2 = [ 1, 2, 3 ]
-
-   As always, the docs can be helpful in figuring out which function to use. As
-   a hint, it involves working with a list of possible decoders.
+   The new decoding function is going to look a lot like `field`, but instead of `String` keys, we have an array, so that means indices.
 -}
 
 
-decoder : Decoder (List Int)
-decoder =
-    fail "Implement me!"
+type alias Votes =
+    { upVotes : Int
+    , downVotes : Int
+    }
+
+
+votesDecoder : Decoder Votes
+votesDecoder =
+    fail "User opinions don't matter!"
 
 
 

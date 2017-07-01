@@ -1,34 +1,49 @@
-module Exercise04 exposing (decoder)
+module Exercise04 exposing (Color(Red, Green, Blue), colorDecoder)
 
 import Json.Decode exposing (Decoder, fail)
 
 
-{- Something very powerful about decoding in Elm, is that it decouples the
-   internal representation of your data from the external representation.
+{- Transforming values is great and all, but sometimes we might want to reject
+   a value as invalid. This is often the case when we are trying to produce a
+   union type from something like a `String`.
 
-   In this exercise, we'll explore that, _very very_ briefly: we'll make a
-   decoder that extracts a single piece of information from an object.
+   This has two steps.
 
-   input:
+   First, the helper function below takes a string and produces a decoder which
+   makes a `Color` on success. The acceptable strings are "red", "green", and
+   "blue". Any other string should produce a failure. You have already seen
+   or used everything you need to write this function.
 
-        var input = { "age": 50 }
+       colorDecoderFromString "red" ~= succeed Red
 
-   output:
+       colorDecoderFromString "foo" ~= fail "foo is not a recognized color."
 
-        50
+   Second, we want to find something like `map`, but different. We want to use
+   a function of `String -> Decoder Color` (our helper function) and make a
+   function of `Decoder String -> Decoder Color`.
 
-   In order to to this, you'll need to run a primitive decoder on the value of
-   that field. How can we do this? Well, the Json.Decode module happens to
-   expose a number of decoders that allow "navigating" the JS object, and
-   running a decoder on their "target". In this case, you know that the field
-   is named `age`, so you'll probably need something that can take a `String`
-   and a `Decoder a` and returns a `Decoder a`...
+       colorDecoder (succeed "blue") ~= succeed Blue
+
+       colorDecoder (succeed "bar") ~= fail "bar is not a recognized color."
+
+       colorDecoder (fail "something") ~= fail "something"
 -}
 
 
-decoder : Decoder Int
-decoder =
-    fail "tum tum tummmmm"
+colorDecoder : Decoder String -> Decoder Color
+colorDecoder stringDecoder =
+    fail "tum tum"
+
+
+type Color
+    = Red
+    | Green
+    | Blue
+
+
+colorDecoderFromString : String -> Decoder Color
+colorDecoderFromString colorString =
+    fail "tummmmm"
 
 
 
